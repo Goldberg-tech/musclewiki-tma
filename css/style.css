@@ -24,6 +24,10 @@
   padding: 0;
 }
 
+html {
+  overscroll-behavior: none;
+}
+
 html, body {
   height: 100%;
   width: 100%;
@@ -33,6 +37,8 @@ html, body {
   font-size: 14px;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  touch-action: pan-y;
 }
 
 button {
@@ -79,6 +85,8 @@ button {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
   padding-bottom: calc(var(--nav-h) + 16px);
 }
 .scroll-area::-webkit-scrollbar {

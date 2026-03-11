@@ -2,54 +2,45 @@
 //  TELEGRAM INIT
 // ══════════════════════════════════════════════════════════════
 
-const tg = window.Telegram?.WebApp;
+window.addEventListener("DOMContentLoaded", () => {
+  if (window.Telegram?.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    try {
+      tg.expand();
+      if (typeof tg.requestFullscreen === "function") tg.requestFullscreen();
+    } catch(e) {}
+    try {
+      if (typeof tg.disableVerticalSwipes === "function") tg.disableVerticalSwipes();
+    } catch(e) {}
+    try { tg.setHeaderColor("#0d0d0f"); }     catch(e) {}
+    try { tg.setBackgroundColor("#0d0d0f"); } catch(e) {}
+    if (tg.BackButton) tg.BackButton.hide();
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (!tg) return;
+    const exitModal    = document.getElementById("exitModal");
+    const exitBackdrop = document.getElementById("exitBackdrop");
+    const exitCancel   = document.getElementById("exitCancel");
+    const exitConfirm  = document.getElementById("exitConfirm");
+    function showExitModal() { exitModal.classList.add("open"); }
+    function hideExitModal() { exitModal.classList.remove("open"); }
+    tg.onEvent("close", () => showExitModal());
+    exitBackdrop.addEventListener("click", hideExitModal);
+    exitCancel.addEventListener("click",   hideExitModal);
+    exitConfirm.addEventListener("click",  () => tg.close());
 
-  tg.ready();
-
-  // Полный экран
-  try {
-    tg.expand();
-    if (typeof tg.requestFullscreen === 'function') tg.requestFullscreen();
-  } catch(e) {}
-
-  // Отключить свайп вниз (случайное закрытие приложения)
-  try {
-    if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
-  } catch(e) {}
-
-  // Цвета
-  try { tg.setHeaderColor('#0d0d0f'); }     catch(e) {}
-  try { tg.setBackgroundColor('#0d0d0f'); } catch(e) {}
-
-  // Скрыть кнопку назад по умолчанию
-  if (tg.BackButton) tg.BackButton.hide();
-
-  // Модальное окно подтверждения выхода
-  const exitModal    = document.getElementById('exitModal');
-  const exitBackdrop = document.getElementById('exitBackdrop');
-  const exitCancel   = document.getElementById('exitCancel');
-  const exitConfirm  = document.getElementById('exitConfirm');
-
-  function showExitModal() { exitModal?.classList.add('open'); }
-  function hideExitModal() { exitModal?.classList.remove('open'); }
-
-  tg.onEvent('close', () => showExitModal());
-  exitBackdrop?.addEventListener('click', hideExitModal);
-  exitCancel?.addEventListener('click',   hideExitModal);
-  exitConfirm?.addEventListener('click',  () => tg.close());
-
-  // Данные пользователя
-  const user = tg.initDataUnsafe?.user;
-  if (user) {
-    const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
-    document.getElementById('profile-name').textContent = fullName || 'Пользователь';
-    document.getElementById('profile-sub').textContent  = user.username ? `@${user.username}` : 'Добро пожаловать';
-    const initials = (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
-    document.getElementById('profile-avatar').textContent = initials || 'MW';
+    // Данные пользователя
+    const user = tg.initDataUnsafe?.user;
+    if (user) {
+      const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+      document.getElementById('profile-name').textContent = fullName || 'Пользователь';
+      document.getElementById('profile-sub').textContent  = user.username ? `@${user.username}` : 'Добро пожаловать';
+      const initials = (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
+      document.getElementById('profile-avatar').textContent = initials || 'MW';
+    }
   }
+
+  // Инициализация приложения
+  init();
 });
 
 // ══════════════════════════════════════════════════════════════
@@ -208,11 +199,11 @@ function showToast(msg) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  INIT
+//  INIT (вызывается из DOMContentLoaded в начале файла)
 // ══════════════════════════════════════════════════════════════
 
-(function init() {
+function init() {
   renderBodyMap();
   renderQuickMuscles();
   renderFilterChips();
-})();
+}
