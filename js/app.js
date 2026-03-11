@@ -4,12 +4,44 @@
 
 const tg = window.Telegram?.WebApp;
 
-if (tg) {
-  tg.ready();
-  tg.expand();
-  tg.setHeaderColor('#0d0d0f');
-  tg.setBackgroundColor('#0d0d0f');
+window.addEventListener('DOMContentLoaded', () => {
+  if (!tg) return;
 
+  tg.ready();
+
+  // Полный экран
+  try {
+    tg.expand();
+    if (typeof tg.requestFullscreen === 'function') tg.requestFullscreen();
+  } catch(e) {}
+
+  // Отключить свайп вниз (случайное закрытие приложения)
+  try {
+    if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
+  } catch(e) {}
+
+  // Цвета
+  try { tg.setHeaderColor('#0d0d0f'); }     catch(e) {}
+  try { tg.setBackgroundColor('#0d0d0f'); } catch(e) {}
+
+  // Скрыть кнопку назад по умолчанию
+  if (tg.BackButton) tg.BackButton.hide();
+
+  // Модальное окно подтверждения выхода
+  const exitModal    = document.getElementById('exitModal');
+  const exitBackdrop = document.getElementById('exitBackdrop');
+  const exitCancel   = document.getElementById('exitCancel');
+  const exitConfirm  = document.getElementById('exitConfirm');
+
+  function showExitModal() { exitModal?.classList.add('open'); }
+  function hideExitModal() { exitModal?.classList.remove('open'); }
+
+  tg.onEvent('close', () => showExitModal());
+  exitBackdrop?.addEventListener('click', hideExitModal);
+  exitCancel?.addEventListener('click',   hideExitModal);
+  exitConfirm?.addEventListener('click',  () => tg.close());
+
+  // Данные пользователя
   const user = tg.initDataUnsafe?.user;
   if (user) {
     const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
@@ -18,7 +50,7 @@ if (tg) {
     const initials = (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
     document.getElementById('profile-avatar').textContent = initials || 'MW';
   }
-}
+});
 
 // ══════════════════════════════════════════════════════════════
 //  STATE

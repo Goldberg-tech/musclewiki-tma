@@ -690,8 +690,92 @@ button {
 .settings-chevron { color: var(--muted); }
 
 /* ══════════════════════════════════════════════════════════════
-   TOAST
+   EXIT MODAL
 ══════════════════════════════════════════════════════════════ */
+.exit-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+.exit-modal.open {
+  display: block;
+}
+
+.exit-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  animation: fadeIn .2s ease;
+}
+
+.exit-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  padding: 12px 24px 40px;
+  animation: slideUp .25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.exit-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.exit-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.exit-sub {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.exit-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.exit-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 15px;
+  transition: opacity .2s;
+}
+.exit-btn:active { opacity: 0.8; }
+
+.exit-btn-cancel {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.exit-btn-confirm {
+  background: var(--accent2);
+  color: #fff;
+}
+
 #toast {
   position: fixed;
   bottom: calc(var(--nav-h) + 16px);
