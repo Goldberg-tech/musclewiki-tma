@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MuscleWiki</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══ HOME: BODY MAP ══════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="page-header">
+      <h1>MUSCLE<span class="accent">WIKI</span></h1>
+      <p>Нажми на мышцу, чтобы найти упражнения</p>
+    </div>
+    <div class="scroll-area">
+      <div class="body-map-section">
+        <div class="gender-toggle">
+          <button class="gender-btn active" onclick="setGender('male')">♂ Мужской</button>
+          <button class="gender-btn" onclick="setGender('female')">♀ Женский</button>
+        </div>
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="setView('front')">Спереди</button>
+          <button class="view-btn" onclick="setView('back')">Сзади</button>
+        </div>
+        <div class="svg-wrapper" id="body-svg-wrap"></div>
+        <div class="selected-muscle-label" id="selected-label">Выбери группу мышц</div>
+      </div>
+      <div class="section-title">Быстрый выбор</div>
+      <div class="quick-muscles" id="quick-muscles-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISES LIST ════════════════════════════════════════ -->
+  <div id="screen-exercises" class="screen">
+    <div class="page-header">
+      <h1>УПРАЖ<span class="accent">НЕНИЯ</span></h1>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input class="search-input" type="search" placeholder="Поиск упражнений..." id="ex-search" oninput="filterExercises()" />
+    </div>
+    <div class="chips-scroll" id="ex-filter-chips"></div>
+    <div class="scroll-area">
+      <div class="exercises-grid" id="exercises-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ FAVORITES ═════════════════════════════════════════════ -->
+  <div id="screen-favorites" class="screen">
+    <div class="page-header">
+      <h1>ИЗБРАН<span class="accent">НОЕ</span></h1>
+      <p>Сохранённые упражнения</p>
+    </div>
+    <div class="scroll-area">
+      <div class="exercises-grid" id="favorites-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE ══════════════════════════════════════════════ -->
+  <div id="screen-profile" class="screen">
+    <div class="scroll-area">
+      <div class="profile-avatar" id="profile-avatar">MW</div>
+      <div class="profile-name" id="profile-name">Пользователь</div>
+      <div class="profile-sub" id="profile-sub">Добро пожаловать в MuscleWiki</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-viewed">0</div>
+          <div class="stat-label">Просмотрено</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-saved">0</div>
+          <div class="stat-label">Сохранено</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-muscles">0</div>
+          <div class="stat-label">Групп мышц</div>
+        </div>
+      </div>
+      <div class="settings-list">
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon" style="background:rgba(232,255,71,0.1)">🔔</div>
+            <div class="settings-label">Уведомления</div>
+          </div>
+          <svg class="settings-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon" style="background:rgba(255,92,56,0.1)">🎯</div>
+            <div class="settings-label">Цели тренировок</div>
+          </div>
+          <svg class="settings-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon" style="background:rgba(100,100,200,0.1)">⚙️</div>
+            <div class="settings-label">Настройки</div>
+          </div>
+          <svg class="settings-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon" style="background:rgba(255,200,50,0.1)">⭐</div>
+            <div class="settings-label">Оценить приложение</div>
+          </div>
+          <svg class="settings-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISE DETAIL ═══════════════════════════════════════ -->
+  <div id="screen-detail" class="screen">
+    <div class="detail-header">
+      <button class="back-btn" onclick="closeDetail()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <h2 id="detail-title"></h2>
+    </div>
+    <div class="scroll-area" style="padding-bottom: 96px;">
+      <div class="detail-video" id="detail-video-wrap"></div>
+      <div class="detail-tags" id="detail-tags"></div>
+      <div class="detail-section">
+        <h3>Как выполнять</h3>
+        <ul class="steps-list" id="detail-steps"></ul>
+      </div>
+      <div class="detail-section">
+        <h3>Задействованные мышцы</h3>
+        <div class="muscles-row" id="detail-muscles"></div>
+      </div>
+      <div class="detail-section" style="padding-bottom: 0;">
+        <button class="fav-btn" id="fav-btn" onclick="toggleFavorite()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          Сохранить упражнение
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BOTTOM NAV ════════════════════════════════════════════ -->
+  <nav id="bottom-nav">
+    <button class="nav-btn active" onclick="showScreen('home')" id="nav-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Карта
+    </button>
+    <button class="nav-btn" onclick="showScreen('exercises')" id="nav-exercises">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6.5 6.5L17.5 17.5M6.5 17.5L17.5 6.5"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="6.5" r="2.5"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>
+      </svg>
+      Упражнения
+    </button>
+    <button class="nav-btn" onclick="showScreen('favorites')" id="nav-favorites">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+      </svg>
+      Избранное
+    </button>
+    <button class="nav-btn" onclick="showScreen('profile')" id="nav-profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      Профиль
+    </button>
+  </nav>
+</div>
+
+<div id="toast"></div>
+
+<!-- Scripts — порядок важен -->
+<script src="js/data.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
